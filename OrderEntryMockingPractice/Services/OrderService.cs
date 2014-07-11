@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using OrderEntryMockingPractice.Models;
 
 namespace OrderEntryMockingPractice.Services
@@ -11,11 +12,14 @@ namespace OrderEntryMockingPractice.Services
         public OrderSummary PlaceOrder(Order order)
         {
             CheckIfOrderIsValid(order);
-            // if not valid, throw exception why not valid
-                // order valid if, customer exists
-                // items are in stock
             return new OrderSummary();
         }
+
+
+
+
+
+
 
         private void CheckIfOrderIsValid(Order order)
         {
@@ -28,18 +32,39 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Is Empty");
             }
+            if (ContainsDuplicateProducts(order))
+            {
+                reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
+            }
             if (reasonsForInvalidity.Any())
             {
-                string errorMessage = reasonsForInvalidity[0];
-                if (reasonsForInvalidity.Count > 1)
-                {
-                    for (int i = 1; i < reasonsForInvalidity.Count; i++)
-                    {
-                        errorMessage += ", " + reasonsForInvalidity[i];
-                    }
-                }
+                var errorMessage = GenerateErrorMessage(reasonsForInvalidity);
                 throw new InvalidDataException(errorMessage);
             }
+        }
+
+        private Boolean ContainsDuplicateProducts(Order order)
+        {
+            var productsInOrderItems = new List<string>();
+            foreach (OrderItem item in order.OrderItems)
+            {
+                if (productsInOrderItems.Contains(item.Product.Sku)) return true;
+                else productsInOrderItems.Add(item.Product.Sku);
+            }
+            return false;
+        }
+
+        private string GenerateErrorMessage(List<string> reasonsForInvalidity)
+        {
+            string errorMessage = reasonsForInvalidity[0];
+            if (reasonsForInvalidity.Count > 1)
+            {
+                for (int i = 1; i < reasonsForInvalidity.Count; i++)
+                {
+                    errorMessage += ", " + reasonsForInvalidity[i];
+                }
+            }
+            return errorMessage;
         }
     }
 }

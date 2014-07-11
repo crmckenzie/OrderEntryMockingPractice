@@ -23,7 +23,24 @@ namespace OrderEntryMockingPracticeTests
             {
                 CustomerId = 1,
             };
-            order.OrderItems.Add(new OrderItem());
+            var apple = new Product
+            {
+                Sku = "Apple"
+            };
+            var banana = new Product
+            {
+                Sku = "Banana"
+            };
+            var appleOrderItem = new OrderItem
+            {
+                Product = apple
+            };
+            var bananaOrderItem = new OrderItem
+            {
+                Product = banana
+            };
+            order.OrderItems.Add(appleOrderItem);
+            order.OrderItems.Add(bananaOrderItem);
             // Act
             var result = orderService.PlaceOrder(order);    
             // Assert
@@ -40,7 +57,24 @@ namespace OrderEntryMockingPracticeTests
                 {
                     CustomerId = null,
                 };
-            order.OrderItems.Add(new OrderItem());
+            var apple = new Product
+            {
+                Sku = "Apple"
+            };
+            var banana = new Product
+            {
+                Sku = "Banana"
+            };
+            var appleOrderItem = new OrderItem
+            {
+                Product = apple
+            };
+            var bananaOrderItem = new OrderItem
+            {
+                Product = banana
+            };
+            order.OrderItems.Add(appleOrderItem);
+            order.OrderItems.Add(bananaOrderItem);
             //Act
             var result = orderService.PlaceOrder(order);
             //Assert
@@ -79,5 +113,47 @@ namespace OrderEntryMockingPracticeTests
             // ** EXCEPTION SHOULD BE THROWN **
         }
 
+        [Test]
+        [ExpectedException(typeof (InvalidDataException), ExpectedMessage = "OrderItems Contains Duplicate Products")]
+        public static void TestOrderSummaryOrderItemsContainsDuplicateProductsThrowsException()
+        {
+            // Arrange
+            var orderService = new OrderService();
+            var order = new Order
+                {
+                    CustomerId = 1
+                };
+            var apple = new Product
+                {
+                    Sku = "Apple"
+                };
+            var banana = new Product
+                {
+                    Sku = "Banana"
+                };
+            var duplicateBanana = new Product()
+                {
+                    Sku = "Banana"
+                };
+            var appleOrderItem = new OrderItem
+                {
+                    Product = apple
+                };
+            var bananaOrderItem = new OrderItem
+                {
+                    Product = banana
+                };
+            var dupBananaOrderItem = new OrderItem
+                {
+                    Product = duplicateBanana
+                };
+            order.OrderItems.Add(appleOrderItem);
+            order.OrderItems.Add(bananaOrderItem);
+            order.OrderItems.Add(dupBananaOrderItem);
+            // Act
+            var result = orderService.PlaceOrder(order);
+            // Assert
+            // THAT EXCEPTION WAS THROWN
+        }
     }
 }
