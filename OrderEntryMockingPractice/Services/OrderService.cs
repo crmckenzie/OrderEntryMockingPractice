@@ -12,7 +12,7 @@ namespace OrderEntryMockingPractice.Services
 
             // else
             // OrderSummary Returned
-            return null;
+            return new OrderSummary();
         }
     }
 }
