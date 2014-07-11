@@ -36,7 +36,7 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
-            if (NotInStock(order))
+            if (!ProductInStock(order))
             {
                 
             }
@@ -47,14 +47,13 @@ namespace OrderEntryMockingPractice.Services
             }
         }
 
-        private bool NotInStock(Order order)
+        private bool ProductInStock(Order order)
         {
-            
         }
 
         private Boolean ContainsDuplicateProducts(Order order)
         {
-            var productsInOrderItems = new List<string>();
+            var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
             {
                 if (productsInOrderItems.Contains(item.Product.Sku)) return true;
