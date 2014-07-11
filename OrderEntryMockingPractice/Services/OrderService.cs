@@ -19,15 +19,26 @@ namespace OrderEntryMockingPractice.Services
 
         private void CheckIfOrderIsValid(Order order)
         {
-            //var reasonsForInvalidity = new List<string>();
+            var reasonsForInvalidity = new List<string>();
             if (order.CustomerId.Equals(null))
             {
-                //reasonsForInvalidity.Add("CustomerId does not exist");
-                throw new InvalidDataException("CustomerId Is Null");
+                reasonsForInvalidity.Add("CustomerId Is Null");
             }
             if (order.OrderItems.Equals(null) || !order.OrderItems.Any())
             {
-                throw new InvalidDataException("OrderItems Is Empty");
+                reasonsForInvalidity.Add("OrderItems Is Empty");
+            }
+            if (reasonsForInvalidity.Any())
+            {
+                string errorMessage = reasonsForInvalidity[0];
+                if (reasonsForInvalidity.Count > 1)
+                {
+                    for (int i = 1; i < reasonsForInvalidity.Count; i++)
+                    {
+                        errorMessage += ", " + reasonsForInvalidity[i];
+                    }
+                }
+                throw new InvalidDataException(errorMessage);
             }
         }
     }

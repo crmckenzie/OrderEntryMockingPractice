@@ -49,13 +49,29 @@ namespace OrderEntryMockingPracticeTests
 
         [Test]
         [ExpectedException(typeof(InvalidDataException), ExpectedMessage = "OrderItems Is Empty")]
-        public static void TestOrderSummaryOrderHasEmptyOrderItems()
+        public static void TestOrderSummaryOrderHasEmptyOrderItemsThrowsException()
         {
             //Arrange
             var orderService = new OrderService();
             var order = new Order
             {
                 CustomerId = 1,
+            };
+            //Act
+            var result = orderService.PlaceOrder(order);
+            //Assert
+            // ** EXCEPTION SHOULD BE THROWN **
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidDataException), ExpectedMessage = "CustomerId Is Null, OrderItems Is Empty")]
+        public static void TestOrderSummaryOrderHasEmptyOrderItemsAndEmptyOrderItemsThrowsException()
+        {
+            //Arrange
+            var orderService = new OrderService();
+            var order = new Order
+            {
+                CustomerId = null,
             };
             //Act
             var result = orderService.PlaceOrder(order);
