@@ -36,11 +36,20 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
+            if (NotInStock(order))
+            {
+                
+            }
             if (reasonsForInvalidity.Any())
             {
                 var errorMessage = GenerateErrorMessage(reasonsForInvalidity);
                 throw new InvalidDataException(errorMessage);
             }
+        }
+
+        private bool NotInStock(Order order)
+        {
+            
         }
 
         private Boolean ContainsDuplicateProducts(Order order)
