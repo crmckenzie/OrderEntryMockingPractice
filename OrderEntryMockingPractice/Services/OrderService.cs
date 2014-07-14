@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using NSubstitute;
-using NUnit.Framework;
 using OrderEntryMockingPractice.Models;
 
 namespace OrderEntryMockingPractice.Services
@@ -29,6 +26,13 @@ namespace OrderEntryMockingPractice.Services
             OrderConfirmation confirmation = OrderFulfill.Fulfill(order);
             SendConfirmationEmail(order, confirmation);
             return new OrderSummary();
+        }
+
+        public decimal getNetTotal(Order order)
+        {
+            CheckIfOrderIsValid(order);
+            decimal netTotal = order.OrderItems.Sum(item => item.Product.Price * item.Quantity);
+            return netTotal;
         }
 
         private void SendConfirmationEmail(Order order, OrderConfirmation confirmation)
@@ -81,7 +85,9 @@ namespace OrderEntryMockingPractice.Services
             }
             return false;
         }
+
     }
+    
 
     public class InvalidOrderException : Exception
     {

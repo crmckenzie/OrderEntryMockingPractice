@@ -242,7 +242,49 @@ namespace OrderEntryMockingPracticeTests
             }
             // Assert
             orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
+        }
 
+        [Test]
+        public static void TestNetTotalProperlyCalculated()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var orderWithPrices = CreateOrderWithPricesAndQuantities();
+            // Act
+            var result = orderService.getNetTotal(orderWithPrices);
+            // Assert
+            Assert.AreEqual(8, result);
+        }
+
+        private static Order CreateOrderWithPricesAndQuantities()
+        {
+            var order = new Order
+            {
+                CustomerId = 1
+            };
+            var apple = new Product
+            {
+                Sku = "Apple",
+                Price = 1
+            };
+            var banana = new Product
+            {
+                Sku = "Banana",
+                Price = 3
+            };
+            var appleOrderItem = new OrderItem
+            {
+                Product = apple,
+                Quantity = 5
+            };
+            var bananaOrderItem = new OrderItem
+            {
+                Product = banana,
+                Quantity = 1
+            };
+            order.OrderItems.Add(appleOrderItem);
+            order.OrderItems.Add(bananaOrderItem);
+            return order;
         }
 
         private static Order CreateValidOrder()
@@ -309,8 +351,8 @@ namespace OrderEntryMockingPracticeTests
         {
             var productRepo = CreateMockProductRepository();
             var emailService = CreateMockEmailService();
-/*            var customerRepo = CreateMockCustomerRepository();
-            var raxRateService = CreateMockTaxRateService();*/
+            //var customerRepo = CreateMockCustomerRepository();
+            //var raxRateService = CreateMockTaxRateService();
             var orderFulfill = CreateMockFulfillService();
             return new OrderService(productRepo,orderFulfill,emailService);
         }
@@ -328,12 +370,12 @@ namespace OrderEntryMockingPracticeTests
             return emailService;
         }
 
-       /* private static ITaxRateService CreateMockTaxRateService()
+/*        private static ITaxRateService CreateMockTaxRateService()
         {
             throw new NotImplementedException();
-        }
+        }*/
 
-        private static ICustomerRepository CreateMockCustomerRepository()
+        /*private static ICustomerRepository CreateMockCustomerRepository()
         {
             throw new NotImplementedException();
         }*/
