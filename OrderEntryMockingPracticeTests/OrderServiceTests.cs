@@ -36,7 +36,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             try
             {
-                var result = orderService.PlaceOrder(null);
+                orderService.PlaceOrder(null);
             }
             catch (NullReferenceException exc)
             {
@@ -59,7 +59,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             try
             {
-                var result = orderService.PlaceOrder(order);
+                orderService.PlaceOrder(order);
             }
             catch (InvalidOrderException exc)
             {
@@ -83,7 +83,7 @@ namespace OrderEntryMockingPracticeTests
             //Act
             try
             {
-                var result = orderService.PlaceOrder(order);
+                orderService.PlaceOrder(order);
             }
             catch (InvalidOrderException exc)
             {
@@ -107,7 +107,7 @@ namespace OrderEntryMockingPracticeTests
             //Act
             try
             {
-                var result = orderService.PlaceOrder(order);
+                orderService.PlaceOrder(order);
             }
             catch (InvalidOrderException exc)
             {
@@ -133,7 +133,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             try
             {
-                var result = orderService.PlaceOrder(order);
+                orderService.PlaceOrder(order);
             }
             catch (InvalidOrderException exc)
             {
@@ -179,6 +179,38 @@ namespace OrderEntryMockingPracticeTests
             }
             // Assert
             Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+        }
+
+        [Test]
+        public static void TestOrderFulfillmentCalledWhenOrderValid()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var order = CreateValidOrder();
+            // Act
+            orderService.PlaceOrder(order);
+            // Assert
+            orderService.OrderFulfill.Received().Fulfill(order);
+        }
+
+        [Test]
+        public static void TestOrderFulfillmentNotCalledWhenOrderInvalid()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var invalidOrder = new Order();
+            try
+            {
+                // Act
+                orderService.PlaceOrder(invalidOrder);
+            }
+            catch (InvalidOrderException exc)
+            {
+                // Don't Care
+            }
+            // Assert
+            orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
+
         }
 
         private static Order CreateValidOrder()
@@ -239,22 +271,26 @@ namespace OrderEntryMockingPracticeTests
             order.OrderItems.Add(dupBananaOrderItem);
         }
 
+        
+
         private static OrderService CreateOrderService()
         {
             var productRepo = CreateMockProductRepository();
-            var customerRepo = CreateMockCustomerRepository();
+/*            var customerRepo = CreateMockCustomerRepository();
             var emailService = CreateMockEmailService();
-            var raxRateService = CreateMockTaxRateService();
-            var orderFullfill = CreateMockFullfillService();
-            return new OrderService(productRepo);
+            var raxRateService = CreateMockTaxRateService();*/
+            var orderFulfill = CreateMockFulfillService();
+            return new OrderService(productRepo,orderFulfill);
         }
 
-        private static IOrderFulfillmentService CreateMockFullfillService()
+        private static IOrderFulfillmentService CreateMockFulfillService()
         {
-            throw new NotImplementedException();
+            var fulfillService = Substitute.For<IOrderFulfillmentService>();
+            fulfillService.Fulfill(Arg.Any<Order>()).Returns(new OrderConfirmation());
+            return fulfillService;
         }
 
-        private static ITaxRateService CreateMockTaxRateService()
+       /* private static ITaxRateService CreateMockTaxRateService()
         {
             throw new NotImplementedException();
         }
@@ -267,7 +303,7 @@ namespace OrderEntryMockingPracticeTests
         private static ICustomerRepository CreateMockCustomerRepository()
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         private static IProductRepository CreateMockProductRepository()
         {

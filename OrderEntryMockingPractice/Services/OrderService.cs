@@ -10,17 +10,20 @@ namespace OrderEntryMockingPractice.Services
 {
     public class OrderService
     {
-        IProductRepository ProductRepository { get; set; }
+        public IProductRepository ProductRepository { get; set; }
+        public IOrderFulfillmentService OrderFulfill { get; set; }
 
-        public OrderService (IProductRepository productRepository)
+        public OrderService (IProductRepository productRepository, IOrderFulfillmentService orderFulfill)
         {
             ProductRepository = productRepository;
+            OrderFulfill = orderFulfill;
         }
 
         public OrderSummary PlaceOrder(Order order)
         {
             if (order == null) throw new NullReferenceException();
             CheckIfOrderIsValid(order);
+            OrderFulfill.Fulfill(order);
             return new OrderSummary();
         }
 
