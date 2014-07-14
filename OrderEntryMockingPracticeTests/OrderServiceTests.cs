@@ -209,6 +209,38 @@ namespace OrderEntryMockingPracticeTests
                 // Don't Care
             }
             // Assert
+            orderService.EmailService.DidNotReceive().SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
+
+        }
+
+        [Test]
+        public static void TestEmailConfirmationCalledWhenOrderValid()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var order = CreateValidOrder();
+            // Act
+            orderService.PlaceOrder(order);
+            // Assert
+            orderService.EmailService.Received().SendOrderConfirmationEmail(Arg.Any<int>(),Arg.Any<int>());
+        }
+
+        [Test]
+        public static void TestEmailConfirmationNotCalledWhenOrderInvalid()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var invalidOrder = new Order();
+            try
+            {
+                // Act
+                orderService.PlaceOrder(invalidOrder);
+            }
+            catch (InvalidOrderException exc)
+            {
+                // Don't Care
+            }
+            // Assert
             orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
 
         }
@@ -276,11 +308,11 @@ namespace OrderEntryMockingPracticeTests
         private static OrderService CreateOrderService()
         {
             var productRepo = CreateMockProductRepository();
-/*            var customerRepo = CreateMockCustomerRepository();
             var emailService = CreateMockEmailService();
+/*            var customerRepo = CreateMockCustomerRepository();
             var raxRateService = CreateMockTaxRateService();*/
             var orderFulfill = CreateMockFulfillService();
-            return new OrderService(productRepo,orderFulfill);
+            return new OrderService(productRepo,orderFulfill,emailService);
         }
 
         private static IOrderFulfillmentService CreateMockFulfillService()
@@ -290,12 +322,13 @@ namespace OrderEntryMockingPracticeTests
             return fulfillService;
         }
 
-       /* private static ITaxRateService CreateMockTaxRateService()
+        private static IEmailService CreateMockEmailService()
         {
-            throw new NotImplementedException();
+            var emailService = Substitute.For<IEmailService>();
+            return emailService;
         }
 
-        private static IEmailService CreateMockEmailService()
+       /* private static ITaxRateService CreateMockTaxRateService()
         {
             throw new NotImplementedException();
         }

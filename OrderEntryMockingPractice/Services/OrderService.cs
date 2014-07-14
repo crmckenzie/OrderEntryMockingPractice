@@ -12,19 +12,31 @@ namespace OrderEntryMockingPractice.Services
     {
         public IProductRepository ProductRepository { get; set; }
         public IOrderFulfillmentService OrderFulfill { get; set; }
+        public IEmailService EmailService { get; set; }
 
-        public OrderService (IProductRepository productRepository, IOrderFulfillmentService orderFulfill)
+        public OrderService (IProductRepository productRepository, 
+            IOrderFulfillmentService orderFulfill, IEmailService emailService)
         {
             ProductRepository = productRepository;
             OrderFulfill = orderFulfill;
+            EmailService = emailService;
         }
 
         public OrderSummary PlaceOrder(Order order)
         {
             if (order == null) throw new NullReferenceException();
             CheckIfOrderIsValid(order);
-            OrderFulfill.Fulfill(order);
+            OrderConfirmation confirmation = OrderFulfill.Fulfill(order);
+            SendConfirmationEmail(order, confirmation);
             return new OrderSummary();
+        }
+
+        private void SendConfirmationEmail(Order order, OrderConfirmation confirmation)
+        {
+            if (order.CustomerId != null)
+            {
+                EmailService.SendOrderConfirmationEmail((int) order.CustomerId, confirmation.OrderId);
+            }
         }
 
         private void CheckIfOrderIsValid(Order order)
