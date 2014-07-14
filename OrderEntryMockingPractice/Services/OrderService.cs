@@ -10,6 +10,13 @@ namespace OrderEntryMockingPractice.Services
 {
     public class OrderService
     {
+        IProductRepository ProductRepository { get; set; }
+
+        public OrderService (IProductRepository productRepository)
+        {
+            ProductRepository = productRepository;
+        }
+
         public OrderSummary PlaceOrder(Order order)
         {
             if (order == null) throw new NullReferenceException();
@@ -32,7 +39,7 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
-            if (!productsInStock(order))
+            if (!ProductsInStock(order))
             {
                 reasonsForInvalidity.Add("Item Not In Stock In OrderItems");
             }
@@ -42,14 +49,10 @@ namespace OrderEntryMockingPractice.Services
             }
         }
 
-        private bool productsInStock(Order order)
+        private bool ProductsInStock(Order order)
         {
             if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
-            var productRepo = Substitute.For<IProductRepository>();
-            productRepo.IsInStock("Steak").Returns(false);
-            productRepo.IsInStock("Apple").Returns(true);
-            productRepo.IsInStock("Banana").Returns(true);
-            return order.OrderItems.All(item => productRepo.IsInStock(item.Product.Sku));
+            return order.OrderItems.All(item => ProductRepository.IsInStock(item.Product.Sku));
         }
 
         private bool ContainsDuplicateProducts(Order order)
