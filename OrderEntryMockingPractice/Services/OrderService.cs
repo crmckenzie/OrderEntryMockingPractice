@@ -30,9 +30,27 @@ namespace OrderEntryMockingPractice.Services
         {
             if (order == null) throw new NullReferenceException();
             CheckIfOrderIsValid(order);
-            OrderConfirmation confirmation = OrderFulfill.Fulfill(order);
+            var confirmation = OrderFulfill.Fulfill(order);
             SendConfirmationEmail(order, confirmation);
-            return new OrderSummary();
+            return CreateOrderSummary(order, confirmation);
+
+        }
+
+        private OrderSummary CreateOrderSummary(Order order, OrderConfirmation confirmation)
+        {
+            var customer = CustomerRepository.Get((int) order.CustomerId);
+            var orderSummary = new OrderSummary
+                {
+                    OrderId = confirmation.OrderId,
+                    OrderNumber = confirmation.OrderNumber,
+                    CustomerId = (int) order.CustomerId,
+                    OrderItems = order.OrderItems,
+                    NetTotal = GetNetTotal(order),
+                    Taxes = TaxRateService.GetTaxEntries(customer.PostalCode, customer.Country),
+                    Total = GetOrderTotal(order),
+                    EstimatedDeliveryDate = confirmation.EstimatedDeliveryDate
+                };
+            return orderSummary;
         }
 
         public decimal GetNetTotal(Order order)

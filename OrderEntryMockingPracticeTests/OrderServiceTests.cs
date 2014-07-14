@@ -284,7 +284,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             var result = orderService.PlaceOrder(orderWithPrices);
             // Assert
-            Assert.That(result.OrderId.Equals(1));
+            Assert.That(result.OrderId.Equals(10));
             Assert.That(result.OrderNumber.Equals("fakeOrderNumber"));
             Assert.That(result.CustomerId.Equals(1));
             Assert.That(result.OrderItems.Count > 0);
