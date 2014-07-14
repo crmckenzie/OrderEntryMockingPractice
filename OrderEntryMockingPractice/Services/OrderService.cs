@@ -15,12 +15,6 @@ namespace OrderEntryMockingPractice.Services
             return new OrderSummary();
         }
 
-
-
-
-
-
-
         private void CheckIfOrderIsValid(Order order)
         {
             var reasonsForInvalidity = new List<string>();
@@ -36,23 +30,16 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
-            if (!ProductInStock(order))
-            {
-                
-            }
             if (reasonsForInvalidity.Any())
             {
-                var errorMessage = GenerateErrorMessage(reasonsForInvalidity);
-                throw new InvalidDataException(errorMessage);
+                throw new InvalidOrderException(reasonsForInvalidity);
             }
         }
 
-        private bool ProductInStock(Order order)
-        {
-        }
 
         private Boolean ContainsDuplicateProducts(Order order)
         {
+            if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
             {
@@ -61,18 +48,29 @@ namespace OrderEntryMockingPractice.Services
             }
             return false;
         }
+    }
 
-        private string GenerateErrorMessage(List<string> reasonsForInvalidity)
+    public class InvalidOrderException : Exception
+    {
+        List<string> ExceptionMessages { get; set; }
+        public new virtual string Message { get; set;  }
+
+        public InvalidOrderException(List<string> exceptionMessages)
         {
-            string errorMessage = reasonsForInvalidity[0];
-            if (reasonsForInvalidity.Count > 1)
+            ExceptionMessages = exceptionMessages;
+            GenerateErrorMessage();
+        }
+
+        private void GenerateErrorMessage()
+        {
+            Message = ExceptionMessages[0];
+            if (ExceptionMessages.Count > 1)
             {
-                for (int i = 1; i < reasonsForInvalidity.Count; i++)
+                for (int i = 1; i < ExceptionMessages.Count; i++)
                 {
-                    errorMessage += ", " + reasonsForInvalidity[i];
+                    Message += ", " + ExceptionMessages[i];
                 }
             }
-            return errorMessage;
         }
     }
 }

@@ -23,24 +23,6 @@ namespace OrderEntryMockingPracticeTests
             {
                 CustomerId = 1,
             };
-            var apple = new Product
-            {
-                Sku = "Apple"
-            };
-            var banana = new Product
-            {
-                Sku = "Banana"
-            };
-            var appleOrderItem = new OrderItem
-            {
-                Product = apple
-            };
-            var bananaOrderItem = new OrderItem
-            {
-                Product = banana
-            };
-            order.OrderItems.Add(appleOrderItem);
-            order.OrderItems.Add(bananaOrderItem);
             // Act
             var result = orderService.PlaceOrder(order);    
             // Assert
@@ -57,24 +39,6 @@ namespace OrderEntryMockingPracticeTests
                 {
                     CustomerId = null,
                 };
-            var apple = new Product
-            {
-                Sku = "Apple"
-            };
-            var banana = new Product
-            {
-                Sku = "Banana"
-            };
-            var appleOrderItem = new OrderItem
-            {
-                Product = apple
-            };
-            var bananaOrderItem = new OrderItem
-            {
-                Product = banana
-            };
-            order.OrderItems.Add(appleOrderItem);
-            order.OrderItems.Add(bananaOrderItem);
             //Act
             var result = orderService.PlaceOrder(order);
             //Assert
@@ -123,6 +87,15 @@ namespace OrderEntryMockingPracticeTests
                 {
                     CustomerId = 1
                 };
+            AddDuplicateProductToOrder(order);
+            // Act
+            var result = orderService.PlaceOrder(order);
+            // Assert
+            // THAT EXCEPTION WAS THROWN
+        }
+
+        private static void AddDuplicateProductToOrder(Order order)
+        {
             var apple = new Product
                 {
                     Sku = "Apple"
@@ -150,10 +123,6 @@ namespace OrderEntryMockingPracticeTests
             order.OrderItems.Add(appleOrderItem);
             order.OrderItems.Add(bananaOrderItem);
             order.OrderItems.Add(dupBananaOrderItem);
-            // Act
-            var result = orderService.PlaceOrder(order);
-            // Assert
-            // THAT EXCEPTION WAS THROWN
         }
     }
 }
