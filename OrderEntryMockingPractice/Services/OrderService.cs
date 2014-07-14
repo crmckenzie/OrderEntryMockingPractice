@@ -33,7 +33,6 @@ namespace OrderEntryMockingPractice.Services
             var confirmation = OrderFulfill.Fulfill(order);
             SendConfirmationEmail(order, confirmation);
             return CreateOrderSummary(order, confirmation);
-
         }
 
         private OrderSummary CreateOrderSummary(Order order, OrderConfirmation confirmation)
@@ -68,7 +67,7 @@ namespace OrderEntryMockingPractice.Services
             var netTotal = GetNetTotal(order);
             var taxRateEntries = TaxRateService.GetTaxEntries(customerInfo.PostalCode, 
                 customerInfo.Country);
-            // just averaging the taxes since this is slightly unclear
+            // just averaging the taxes
             var numberOfTaxRates = 0m;
             var totalOfTaxRates = 0m;
             foreach (var taxRate in taxRateEntries)
@@ -129,12 +128,9 @@ namespace OrderEntryMockingPractice.Services
                 else productsInOrderItems.Add(item.Product.Sku);
             }
             return false;
-        }
-
-        
+        }  
     }
     
-
     public class InvalidOrderException : Exception
     {
         public List<string> ExceptionMessages { get; set; }

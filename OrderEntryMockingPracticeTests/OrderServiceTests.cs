@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using NSubstitute;
 using NUnit.Framework;
 using OrderEntryMockingPractice.Models;
@@ -38,7 +37,7 @@ namespace OrderEntryMockingPracticeTests
             {
                 orderService.PlaceOrder(null);
             }
-            catch (NullReferenceException exc)
+            catch (NullReferenceException)
             {
                 succeeded = true;
             }
@@ -156,7 +155,7 @@ namespace OrderEntryMockingPracticeTests
             productRepo.IsInStock("Apple").Returns(true);
             productRepo.IsInStock("Banana").Returns(true);
             var orderService = CreateOrderService();
-            var order = new Order()
+            var order = new Order
                 {
                     CustomerId = 1
                 };
@@ -173,7 +172,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             try
             {
-                var result = orderService.PlaceOrder(order);
+                orderService.PlaceOrder(order);
             }
             catch (InvalidOrderException exc)
             {
@@ -209,14 +208,12 @@ namespace OrderEntryMockingPracticeTests
                 // Act
                 orderService.PlaceOrder(invalidOrder);
             }
-            catch (InvalidOrderException exc)
+            catch (InvalidOrderException)
             {
                 // Only Care THat Fulfill not called
             }
             // Assert
-            orderService.EmailService.DidNotReceive()
-                .SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
-
+            orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
         }
 
         [Test]
@@ -248,7 +245,8 @@ namespace OrderEntryMockingPracticeTests
                 // Only care that Fulfill is not called if exception is thrown
             }
             // Assert
-            orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
+            orderService.EmailService.DidNotReceive()
+                .SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
         }
 
         [Test]
@@ -362,7 +360,7 @@ namespace OrderEntryMockingPracticeTests
                 {
                     Sku = "Banana"
                 };
-            var duplicateBanana = new Product()
+            var duplicateBanana = new Product
                 {
                     Sku = "Banana"
                 };
@@ -382,8 +380,6 @@ namespace OrderEntryMockingPracticeTests
             order.OrderItems.Add(bananaOrderItem);
             order.OrderItems.Add(dupBananaOrderItem);
         }
-
-        
 
         private static OrderService CreateOrderService()
         {
