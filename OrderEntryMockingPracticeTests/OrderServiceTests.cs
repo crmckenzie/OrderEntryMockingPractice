@@ -275,6 +275,25 @@ namespace OrderEntryMockingPracticeTests
             Assert.AreEqual(8.64m, result);
         }
 
+        [Test]
+        public static void TestForProperOrderSummary()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var orderWithPrices = CreateOrderWithPricesAndQuantities();
+            // Act
+            var result = orderService.PlaceOrder(orderWithPrices);
+            // Assert
+            Assert.That(result.OrderId.Equals(1));
+            Assert.That(result.OrderNumber.Equals("fakeOrderNumber"));
+            Assert.That(result.CustomerId.Equals(1));
+            Assert.That(result.OrderItems.Count > 0);
+            Assert.That(result.Taxes, Is.Not.Null);
+            Assert.That(result.NetTotal.Equals(8m));
+            Assert.That(result.Total.Equals(8.64m));
+            Assert.That(result.EstimatedDeliveryDate, Is.Not.Null);
+        }
+
         private static Order CreateOrderWithPricesAndQuantities()
         {
             var order = new Order
