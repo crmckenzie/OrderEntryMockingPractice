@@ -11,6 +11,7 @@ namespace OrderEntryMockingPractice.Services
     {
         public OrderSummary PlaceOrder(Order order)
         {
+            if (order == null) throw new NullReferenceException();
             CheckIfOrderIsValid(order);
             return new OrderSummary();
         }
@@ -36,7 +37,6 @@ namespace OrderEntryMockingPractice.Services
             }
         }
 
-
         private Boolean ContainsDuplicateProducts(Order order)
         {
             if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
@@ -52,7 +52,7 @@ namespace OrderEntryMockingPractice.Services
 
     public class InvalidOrderException : Exception
     {
-        List<string> ExceptionMessages { get; set; }
+        public List<string> ExceptionMessages { get; set; }
         public new virtual string Message { get; set;  }
 
         public InvalidOrderException(List<string> exceptionMessages)

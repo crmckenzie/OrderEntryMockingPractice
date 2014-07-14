@@ -13,41 +13,52 @@ namespace OrderEntryMockingPracticeTests
     [TestFixture]
     public class OrderServiceTests
     {
-      
+
         [Test]
-        public static void TestOrderSummaryDoesNotReturnNull()
+        public static void TestPlaceOrderOrderIsNullThrowsException()
+        {
+            // Arrange
+            var orderService = new OrderService();
+            var succeeded = false;
+            // Act
+            try
+            {
+                var result = orderService.PlaceOrder(null);
+            }
+            catch (NullReferenceException exc)
+            {
+                succeeded = true;
+            }
+            // Assert
+            Assert.That(succeeded, Is.True, "The Expected NullReferenceException was not caught.");
+        }
+
+        [Test]
+        public static void TestPlaceOrderHasNullCustomerIdThrowsException()
         {
             // Arrange
             var orderService = new OrderService();
             var order = new Order
             {
-                CustomerId = 1,
+                CustomerId = null,
             };
+            var succeeded = false;
             // Act
-            var result = orderService.PlaceOrder(order);    
+            try
+            {
+                var result = orderService.PlaceOrder(order);
+            }
+            catch (InvalidOrderException exc)
+            {
+                Assert.That(exc.ExceptionMessages, Has.Member("CustomerId Is Null"));
+                succeeded = true;
+            }
             // Assert
-            Assert.That(result, Is.Not.Null);
+            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
-        [ExpectedException( typeof(InvalidDataException), ExpectedMessage="CustomerId Is Null")]
-        public static void TestOrderSummaryOrderHasNullCustomerIdThrowsException()
-        {
-            //Arrange
-            var orderService = new OrderService();
-            var order = new Order
-                {
-                    CustomerId = null,
-                };
-            //Act
-            var result = orderService.PlaceOrder(order);
-            //Assert
-            // ** EXCEPTION SHOULD BE THROWN **
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidDataException), ExpectedMessage = "OrderItems Is Empty")]
-        public static void TestOrderSummaryOrderHasEmptyOrderItemsThrowsException()
+        public static void TestPlaceOrderOrderHasEmptyOrderItemsThrowsException()
         {
             //Arrange
             var orderService = new OrderService();
@@ -55,15 +66,23 @@ namespace OrderEntryMockingPracticeTests
             {
                 CustomerId = 1,
             };
+            var succeeded = false;
             //Act
-            var result = orderService.PlaceOrder(order);
-            //Assert
-            // ** EXCEPTION SHOULD BE THROWN **
+            try
+            {
+                var result = orderService.PlaceOrder(order);
+            }
+            catch (InvalidOrderException exc)
+            {
+                Assert.That(exc.ExceptionMessages, Has.Member("OrderItems Is Empty"));
+                succeeded = true;
+            }
+            // Assert
+            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidDataException), ExpectedMessage = "CustomerId Is Null, OrderItems Is Empty")]
-        public static void TestOrderSummaryOrderHasEmptyOrderItemsAndEmptyOrderItemsThrowsException()
+        public static void TestPlaceOrderOrderHasEmptyOrderItemsAndEmptyOrderItemsThrowsException()
         {
             //Arrange
             var orderService = new OrderService();
@@ -71,15 +90,24 @@ namespace OrderEntryMockingPracticeTests
             {
                 CustomerId = null,
             };
+            var succeeded = false;
             //Act
-            var result = orderService.PlaceOrder(order);
-            //Assert
-            // ** EXCEPTION SHOULD BE THROWN **
+            try
+            {
+                var result = orderService.PlaceOrder(order);
+            }
+            catch (InvalidOrderException exc)
+            {
+                Assert.That(exc.ExceptionMessages, Has.Member("OrderItems Is Empty"));
+                Assert.That(exc.ExceptionMessages, Has.Member("CustomerId Is Null"));
+                succeeded = true;
+            }
+            // Assert
+            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
-        [ExpectedException(typeof (InvalidDataException), ExpectedMessage = "OrderItems Contains Duplicate Products")]
-        public static void TestOrderSummaryOrderItemsContainsDuplicateProductsThrowsException()
+        public static void TestPlaceOrderOrderItemsContainsDuplicateProductsThrowsException()
         {
             // Arrange
             var orderService = new OrderService();
@@ -88,10 +116,20 @@ namespace OrderEntryMockingPracticeTests
                     CustomerId = 1
                 };
             AddDuplicateProductToOrder(order);
+            var succeeded = false;
             // Act
-            var result = orderService.PlaceOrder(order);
+            try
+            {
+                var result = orderService.PlaceOrder(order);
+            }
+            catch (InvalidOrderException exc)
+            {
+                Assert.That(exc.ExceptionMessages, Has.Member("OrderItems Contains Duplicate Products"));
+                succeeded = true;
+            }
             // Assert
-            // THAT EXCEPTION WAS THROWN
+            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+
         }
 
         private static void AddDuplicateProductToOrder(Order order)
