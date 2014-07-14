@@ -129,7 +129,39 @@ namespace OrderEntryMockingPracticeTests
             }
             // Assert
             Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+        }
 
+        [Test]
+        public static void TestPlaceOrderItemNotInStockThrowsException()
+        {
+            // Arrange
+            var orderService = new OrderService();
+            var order = new Order()
+                {
+                    CustomerId = 1
+                };
+            var steakNotInStock = new Product
+            {
+                Sku = "Steak"
+            };
+            var steakOrderItemNotInStock = new OrderItem
+            {
+                Product = steakNotInStock
+            };
+            order.OrderItems.Add(steakOrderItemNotInStock);
+            var succeeded = false;
+            // Act
+            try
+            {
+                var result = orderService.PlaceOrder(order);
+            }
+            catch (InvalidOrderException exc)
+            {
+                Assert.That(exc.ExceptionMessages, Has.Member("Item Not In Stock In OrderItems"));
+                succeeded = true;
+            }
+            // Assert
+            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
         }
 
         private static void AddDuplicateProductToOrder(Order order)

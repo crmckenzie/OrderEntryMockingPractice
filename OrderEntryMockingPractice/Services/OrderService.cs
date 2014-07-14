@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NSubstitute;
 using NUnit.Framework;
 using OrderEntryMockingPractice.Models;
 
@@ -31,13 +32,27 @@ namespace OrderEntryMockingPractice.Services
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
+            if (!productsInStock(order))
+            {
+                reasonsForInvalidity.Add("Item Not In Stock In OrderItems");
+            }
             if (reasonsForInvalidity.Any())
             {
                 throw new InvalidOrderException(reasonsForInvalidity);
             }
         }
 
-        private Boolean ContainsDuplicateProducts(Order order)
+        private bool productsInStock(Order order)
+        {
+            if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
+            var productRepo = Substitute.For<IProductRepository>();
+            productRepo.IsInStock("Steak").Returns(false);
+            productRepo.IsInStock("Apple").Returns(true);
+            productRepo.IsInStock("Banana").Returns(true);
+            return order.OrderItems.All(item => productRepo.IsInStock(item.Product.Sku));
+        }
+
+        private bool ContainsDuplicateProducts(Order order)
         {
             if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
             var productsInOrderItems = new HashSet<string>();
