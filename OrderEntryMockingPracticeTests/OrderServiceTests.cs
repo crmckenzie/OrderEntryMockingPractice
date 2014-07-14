@@ -263,6 +263,18 @@ namespace OrderEntryMockingPracticeTests
             Assert.AreEqual(8, result);
         }
 
+        [Test]
+        public static void TestOrderTotalProperlyCalculated()
+        {
+            // Arrange
+            var orderService = CreateOrderService();
+            var orderWithPrices = CreateOrderWithPricesAndQuantities();
+            // Act
+            var result = orderService.GetOrderTotal(orderWithPrices);
+            // Assert
+            Assert.AreEqual(8.64m, result);
+        }
+
         private static Order CreateOrderWithPricesAndQuantities()
         {
             var order = new Order
@@ -368,7 +380,14 @@ namespace OrderEntryMockingPracticeTests
         private static IOrderFulfillmentService CreateMockFulfillService()
         {
             var fulfillService = Substitute.For<IOrderFulfillmentService>();
-            fulfillService.Fulfill(Arg.Any<Order>()).Returns(new OrderConfirmation());
+            var confirmation = new OrderConfirmation
+                {
+                    OrderNumber = "fakeOrderNumber",
+                    OrderId = 10,
+                    CustomerId = 1,
+                    EstimatedDeliveryDate = new DateTime(2014,06,06)
+                };
+            fulfillService.Fulfill(Arg.Any<Order>()).Returns(confirmation);
             return fulfillService;
         }
 

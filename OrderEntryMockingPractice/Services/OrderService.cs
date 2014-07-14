@@ -42,6 +42,26 @@ namespace OrderEntryMockingPractice.Services
             return netTotal;
         }
 
+        public decimal GetOrderTotal(Order order)
+        {
+            CheckIfOrderIsValid(order);
+            var customerInfo = CustomerRepository.Get((int) order.CustomerId);
+
+            var netTotal = GetNetTotal(order);
+            var taxRateEntries = TaxRateService.GetTaxEntries(customerInfo.PostalCode, 
+                customerInfo.Country);
+            // just averaging the taxes since this is slightly unclear
+            var numberOfTaxRates = 0m;
+            var totalOfTaxRates = 0m;
+            foreach (var taxRate in taxRateEntries)
+            {
+                totalOfTaxRates += taxRate.Rate;
+                numberOfTaxRates += 1.0m;
+            }
+            var totalTax = totalOfTaxRates/numberOfTaxRates;
+            return (netTotal*totalTax) + netTotal;
+        }
+
         private void SendConfirmationEmail(Order order, OrderConfirmation confirmation)
         {
             if (order.CustomerId != null)
@@ -93,6 +113,7 @@ namespace OrderEntryMockingPractice.Services
             return false;
         }
 
+        
     }
     
 
