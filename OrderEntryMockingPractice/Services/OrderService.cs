@@ -10,13 +10,20 @@ namespace OrderEntryMockingPractice.Services
         public IProductRepository ProductRepository { get; set; }
         public IOrderFulfillmentService OrderFulfill { get; set; }
         public IEmailService EmailService { get; set; }
+        public ITaxRateService TaxRateService { get; set; }
+        public ICustomerRepository CustomerRepository { get; set; }
 
         public OrderService (IProductRepository productRepository, 
-            IOrderFulfillmentService orderFulfill, IEmailService emailService)
+            IOrderFulfillmentService orderFulfill, 
+            IEmailService emailService, 
+            ITaxRateService taxRateService, 
+            ICustomerRepository customerRepository)
         {
             ProductRepository = productRepository;
             OrderFulfill = orderFulfill;
             EmailService = emailService;
+            TaxRateService = taxRateService;
+            CustomerRepository = customerRepository;
         }
 
         public OrderSummary PlaceOrder(Order order)
@@ -28,7 +35,7 @@ namespace OrderEntryMockingPractice.Services
             return new OrderSummary();
         }
 
-        public decimal getNetTotal(Order order)
+        public decimal GetNetTotal(Order order)
         {
             CheckIfOrderIsValid(order);
             decimal netTotal = order.OrderItems.Sum(item => item.Product.Price * item.Quantity);

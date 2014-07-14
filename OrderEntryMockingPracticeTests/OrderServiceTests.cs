@@ -116,7 +116,8 @@ namespace OrderEntryMockingPracticeTests
                 succeeded = true;
             }
             // Assert
-            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+            Assert.That(succeeded, Is.True, 
+                "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
@@ -137,11 +138,13 @@ namespace OrderEntryMockingPracticeTests
             }
             catch (InvalidOrderException exc)
             {
-                Assert.That(exc.ExceptionMessages, Has.Member("OrderItems Contains Duplicate Products"));
+                Assert.That(exc.ExceptionMessages, 
+                    Has.Member("OrderItems Contains Duplicate Products"));
                 succeeded = true;
             }
             // Assert
-            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+            Assert.That(succeeded, Is.True, 
+                "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
@@ -174,11 +177,13 @@ namespace OrderEntryMockingPracticeTests
             }
             catch (InvalidOrderException exc)
             {
-                Assert.That(exc.ExceptionMessages, Has.Member("Item Not In Stock In OrderItems"));
+                Assert.That(exc.ExceptionMessages, 
+                    Has.Member("Item Not In Stock In OrderItems"));
                 succeeded = true;
             }
             // Assert
-            Assert.That(succeeded, Is.True, "The Expected InvalidOrderException was not caught.");
+            Assert.That(succeeded, Is.True, 
+                "The Expected InvalidOrderException was not caught.");
         }
 
         [Test]
@@ -206,10 +211,11 @@ namespace OrderEntryMockingPracticeTests
             }
             catch (InvalidOrderException exc)
             {
-                // Don't Care
+                // Only Care THat Fulfill not called
             }
             // Assert
-            orderService.EmailService.DidNotReceive().SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
+            orderService.EmailService.DidNotReceive()
+                .SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
 
         }
 
@@ -222,7 +228,8 @@ namespace OrderEntryMockingPracticeTests
             // Act
             orderService.PlaceOrder(order);
             // Assert
-            orderService.EmailService.Received().SendOrderConfirmationEmail(Arg.Any<int>(),Arg.Any<int>());
+            orderService.EmailService.Received()
+                .SendOrderConfirmationEmail(Arg.Any<int>(),Arg.Any<int>());
         }
 
         [Test]
@@ -236,9 +243,9 @@ namespace OrderEntryMockingPracticeTests
                 // Act
                 orderService.PlaceOrder(invalidOrder);
             }
-            catch (InvalidOrderException exc)
+            catch (InvalidOrderException)
             {
-                // Don't Care
+                // Only care that Fulfill is not called if exception is thrown
             }
             // Assert
             orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
@@ -251,7 +258,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = CreateOrderService();
             var orderWithPrices = CreateOrderWithPricesAndQuantities();
             // Act
-            var result = orderService.getNetTotal(orderWithPrices);
+            var result = orderService.GetNetTotal(orderWithPrices);
             // Assert
             Assert.AreEqual(8, result);
         }
@@ -351,10 +358,11 @@ namespace OrderEntryMockingPracticeTests
         {
             var productRepo = CreateMockProductRepository();
             var emailService = CreateMockEmailService();
-            //var customerRepo = CreateMockCustomerRepository();
-            //var raxRateService = CreateMockTaxRateService();
+            var customerRepo = CreateMockCustomerRepository();
+            var taxRateService = CreateMockTaxRateService();
             var orderFulfill = CreateMockFulfillService();
-            return new OrderService(productRepo,orderFulfill,emailService);
+            return new OrderService(productRepo,orderFulfill,emailService,
+                taxRateService,customerRepo);
         }
 
         private static IOrderFulfillmentService CreateMockFulfillService()
@@ -370,15 +378,43 @@ namespace OrderEntryMockingPracticeTests
             return emailService;
         }
 
-/*        private static ITaxRateService CreateMockTaxRateService()
+        private static ITaxRateService CreateMockTaxRateService()
         {
-            throw new NotImplementedException();
-        }*/
+            var taxService = Substitute.For<ITaxRateService>();
+            var waTaxEntry = new TaxEntry
+                {
+                    Description = "wa",
+                    Rate = .08m
+                };
+            var taxEntryList = new List<TaxEntry> {waTaxEntry};
+            taxService.GetTaxEntries(Arg.Any<String>(), Arg.Any<String>())
+                      .Returns(taxEntryList);
+            return taxService;
+        }
 
-        /*private static ICustomerRepository CreateMockCustomerRepository()
+        private static ICustomerRepository CreateMockCustomerRepository()
         {
-            throw new NotImplementedException();
-        }*/
+            var customerRepository = Substitute.For<ICustomerRepository>();
+            var fakeCustomer = CreateFakeCustomer();
+            customerRepository.Get(Arg.Any<int>()).Returns(fakeCustomer);
+            return customerRepository;
+        }
+
+        private static Customer CreateFakeCustomer()
+        {
+            var fakeCustomer = new Customer
+                {
+                    CustomerId = 1,
+                    CustomerName = "fakeName",
+                    EmailAddress = "fakeEmail",
+                    AddressLine1 = "fakeAddress",
+                    City = "fakeCity",
+                    StateOrProvince = "fakeState",
+                    PostalCode = "fakePostalCode",
+                    Country = "fakeCountry"
+                };
+            return fakeCustomer;
+        }
 
         private static IProductRepository CreateMockProductRepository()
         {
