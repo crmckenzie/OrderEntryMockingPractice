@@ -55,7 +55,7 @@ namespace OrderEntryMockingPractice.Services
 
         public decimal GetNetTotal(Order order)
         {
-            Debug.WriteLine("Seems like GetNetTotal would work better as a method on the order object.")
+            //Debug.WriteLine("Seems like GetNetTotal would work better as a method on the order object.")
             CheckIfOrderIsValid(order);
             decimal netTotal = order.OrderItems.Sum(item => item.Product.Price * item.Quantity);
             return netTotal;
@@ -64,7 +64,7 @@ namespace OrderEntryMockingPractice.Services
         public decimal GetOrderTotal(Order order)
         {
             CheckIfOrderIsValid(order);
-            Debug.WriteLine("Seems like GetOrderTotal (minus the Validation part) would work better as a method on the order object.")
+            //Debug.WriteLine("Seems like GetOrderTotal (minus the Validation part) would work better as a method on the order object.")
             var customerInfo = CustomerRepository.Get((int) order.CustomerId);
 
             var netTotal = GetNetTotal(order);
@@ -117,7 +117,7 @@ namespace OrderEntryMockingPractice.Services
 
         private static bool OrderItemsIsEmpty(Order order)
         {
-            Debug.WriteLine("Seems like OrderItemsIsEmpty would work better as a method on the order object. Perhaps rename to HasOrderItems")
+            //Debug.WriteLine("Seems like OrderItemsIsEmpty would work better as a method on the order object. Perhaps rename to HasOrderItems")
 
             return order.OrderItems.Equals(null) || !order.OrderItems.Any();
         }
@@ -130,7 +130,7 @@ namespace OrderEntryMockingPractice.Services
 
         private bool ContainsDuplicateProducts(Order order)
         {
-            Debug.WriteLine(
+            //Debug.WriteLine(
                 "Seems like ContainsDuplicateProducts would work better as a method on the order object. Perhaps rename to ProductsAreUnique");
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
