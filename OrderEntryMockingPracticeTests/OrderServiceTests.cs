@@ -253,10 +253,9 @@ namespace OrderEntryMockingPracticeTests
         public  void NetTotalProperlyCalculated()
         {
             // Arrange
-            var orderService = CreateOrderService();
             var orderWithPrices = CreateOrderWithPricesAndQuantities();
             // Act
-            var result = orderService.GetNetTotal(orderWithPrices);
+            var result = orderWithPrices.GetNetTotal();
 
             // Assert
             Assert.AreEqual(_netTotal, result);
@@ -269,7 +268,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = CreateOrderService();
             var orderWithPrices = CreateOrderWithPricesAndQuantities();
             // Act
-            var result = orderService.GetOrderTotal(orderWithPrices);
+            var result = orderWithPrices.GetOrderTotalWithTaxes(_taxRate);
             // Assert
             Assert.AreEqual(_orderTotal, result);
         }
@@ -434,7 +433,7 @@ namespace OrderEntryMockingPracticeTests
             var taxService = Substitute.For<ITaxRateService>();
             var waTaxEntry = new TaxEntry
                 {
-                    Description = "wa",
+                    Description = "fakeDescription",
                     Rate = _taxRate
                 };
             var taxEntryList = new List<TaxEntry> {waTaxEntry};

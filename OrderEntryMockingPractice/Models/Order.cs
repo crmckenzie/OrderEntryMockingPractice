@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace OrderEntryMockingPractice.Models
@@ -8,7 +7,7 @@ namespace OrderEntryMockingPractice.Models
     {
         public Order()
         {
-            this.OrderItems = new List<OrderItem>();
+            OrderItems = new List<OrderItem>();
         }
 
         public int? CustomerId { get; set; }
@@ -43,7 +42,7 @@ namespace OrderEntryMockingPractice.Models
             foreach (OrderItem item in OrderItems)
             {
                 if (productsInOrderItems.Contains(item.Product.Sku)) return true;
-                else productsInOrderItems.Add(item.Product.Sku);
+                productsInOrderItems.Add(item.Product.Sku);
             }
             return false;
         } 
