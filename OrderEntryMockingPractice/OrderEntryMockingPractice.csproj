@@ -48,6 +48,7 @@
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Services\ICustomerRepository.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\InvalidOrderException.cs" />
     <Compile Include="Services\IOrderFulfillmentService.cs" />
     <Compile Include="Services\IProductRepository.cs" />
     <Compile Include="Services\ITaxRateService.cs" />

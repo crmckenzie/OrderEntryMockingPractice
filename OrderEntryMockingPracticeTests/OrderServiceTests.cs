@@ -15,38 +15,32 @@ namespace OrderEntryMockingPracticeTests
     {
 
         [Test]
-        public static void TestValidOrder()
+        public  void ValidOrder()
         {
             // Arrange
             var orderService = CreateOrderService();
             var order = CreateValidOrder();
+            
             // Act
             var result = orderService.PlaceOrder(order);
+
             // Assert
             Assert.That(result, Is.Not.Null);
         }
 
         [Test]
-        public static void TestPlaceOrderOrderIsNullThrowsException()
+        public  void PlaceOrderOrderIsNullThrowsException()
         {
             // Arrange
             var orderService = CreateOrderService();
             var succeeded = false;
+
             // Act
-            try
-            {
-                orderService.PlaceOrder(null);
-            }
-            catch (NullReferenceException)
-            {
-                succeeded = true;
-            }
-            // Assert
-            Assert.That(succeeded, Is.True, "The Expected NullReferenceException was not caught.");
+            Assert.Throws<ArgumentNullException>(() => orderService.PlaceOrder(null));
         }
 
         [Test]
-        public static void TestPlaceOrderHasNullCustomerIdThrowsException()
+        public  void PlaceOrderHasNullCustomerIdIsInvalid()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -70,7 +64,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestPlaceOrderOrderHasEmptyOrderItemsThrowsException()
+        public  void PlaceOrderOrderHasEmptyOrderItemsThrowsException()
         {
             //Arrange
             var orderService = CreateOrderService();
@@ -94,7 +88,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestPlaceOrderOrderHasEmptyOrderItemsAndEmptyOrderItemsThrowsException()
+        public void MultipleValidationErrors()
         {
             //Arrange
             var orderService = CreateOrderService();
@@ -120,7 +114,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestPlaceOrderOrderItemsContainsDuplicateProductsThrowsException()
+        public  void DuplicateProducts()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -147,7 +141,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestPlaceOrderItemNotInStockThrowsException()
+        public  void ProductNotInStock()
         {
             // Arrange
             var productRepo = Substitute.For<IProductRepository>();
@@ -186,7 +180,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestOrderFulfillmentCalledWhenOrderValid()
+        public  void OrderFulfillmentCalledWhenOrderValid()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -198,7 +192,7 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestOrderFulfillmentNotCalledWhenOrderInvalid()
+        public  void OrderFulfillmentNotCalledWhenOrderInvalid()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -217,20 +211,22 @@ namespace OrderEntryMockingPracticeTests
         }
 
         [Test]
-        public static void TestEmailConfirmationCalledWhenOrderValid()
+        public  void EmailConfirmationCalledWhenOrderValid()
         {
             // Arrange
             var orderService = CreateOrderService();
             var order = CreateValidOrder();
             // Act
             orderService.PlaceOrder(order);
+
             // Assert
+            Assert.Fail("Arg.Any<int>() is not appropriate here. You'll need to mimic the db behavior of assigning an id and assert that the correct ids are passed.");
             orderService.EmailService.Received()
-                .SendOrderConfirmationEmail(Arg.Any<int>(),Arg.Any<int>());
+                .SendOrderConfirmationEmail(554, 214234);
         }
 
         [Test]
-        public static void TestEmailConfirmationNotCalledWhenOrderInvalid()
+        public  void EmailConfirmationNotCalledWhenOrderInvalid()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -245,24 +241,27 @@ namespace OrderEntryMockingPracticeTests
                 // Only care that Fulfill is not called if exception is thrown
             }
             // Assert
+            Assert.Fail("Arg.Any<int>() is not appropriate here. You'll need to mimic the db behavior of assigning an id and assert that the correct ids are passed.");
             orderService.EmailService.DidNotReceive()
                 .SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
         }
 
         [Test]
-        public static void TestNetTotalProperlyCalculated()
+        public  void NetTotalProperlyCalculated()
         {
             // Arrange
             var orderService = CreateOrderService();
             var orderWithPrices = CreateOrderWithPricesAndQuantities();
             // Act
             var result = orderService.GetNetTotal(orderWithPrices);
+
             // Assert
+            Assert.Fail("8 is a magic number. Give it context to make it meaningful.");
             Assert.AreEqual(8, result);
         }
 
         [Test]
-        public static void TestOrderTotalProperlyCalculated()
+        public  void OrderTotalProperlyCalculated()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -270,11 +269,12 @@ namespace OrderEntryMockingPracticeTests
             // Act
             var result = orderService.GetOrderTotal(orderWithPrices);
             // Assert
+            Assert.Fail("magic number. Give it context to make it meaningful.");
             Assert.AreEqual(8.64m, result);
         }
 
         [Test]
-        public static void TestForProperOrderSummary()
+        public  void ForProperOrderSummary()
         {
             // Arrange
             var orderService = CreateOrderService();
@@ -282,6 +282,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             var result = orderService.PlaceOrder(orderWithPrices);
             // Assert
+            Assert.Fail("magic number. Give it context to make it meaningful.");
             Assert.That(result.OrderId.Equals(10));
             Assert.That(result.OrderNumber.Equals("fakeOrderNumber"));
             Assert.That(result.CustomerId.Equals(1));
@@ -292,7 +293,7 @@ namespace OrderEntryMockingPracticeTests
             Assert.That(result.EstimatedDeliveryDate, Is.Not.Null);
         }
 
-        private static Order CreateOrderWithPricesAndQuantities()
+        private Order CreateOrderWithPricesAndQuantities()
         {
             var order = new Order
             {
@@ -323,7 +324,7 @@ namespace OrderEntryMockingPracticeTests
             return order;
         }
 
-        private static Order CreateValidOrder()
+        private Order CreateValidOrder()
         {
             var order = new Order
                 {
@@ -350,7 +351,7 @@ namespace OrderEntryMockingPracticeTests
             return order;
         }
 
-        private static void AddDuplicateProductToOrder(Order order)
+        private void AddDuplicateProductToOrder(Order order)
         {
             var apple = new Product
                 {
@@ -381,7 +382,7 @@ namespace OrderEntryMockingPracticeTests
             order.OrderItems.Add(dupBananaOrderItem);
         }
 
-        private static OrderService CreateOrderService()
+        private OrderService CreateOrderService()
         {
             var productRepo = CreateMockProductRepository();
             var emailService = CreateMockEmailService();
@@ -392,7 +393,7 @@ namespace OrderEntryMockingPracticeTests
                 taxRateService,customerRepo);
         }
 
-        private static IOrderFulfillmentService CreateMockFulfillService()
+        private IOrderFulfillmentService CreateMockFulfillService()
         {
             var fulfillService = Substitute.For<IOrderFulfillmentService>();
             var confirmation = new OrderConfirmation
@@ -406,13 +407,13 @@ namespace OrderEntryMockingPracticeTests
             return fulfillService;
         }
 
-        private static IEmailService CreateMockEmailService()
+        private IEmailService CreateMockEmailService()
         {
             var emailService = Substitute.For<IEmailService>();
             return emailService;
         }
 
-        private static ITaxRateService CreateMockTaxRateService()
+        private ITaxRateService CreateMockTaxRateService()
         {
             var taxService = Substitute.For<ITaxRateService>();
             var waTaxEntry = new TaxEntry
@@ -426,7 +427,7 @@ namespace OrderEntryMockingPracticeTests
             return taxService;
         }
 
-        private static ICustomerRepository CreateMockCustomerRepository()
+        private ICustomerRepository CreateMockCustomerRepository()
         {
             var customerRepository = Substitute.For<ICustomerRepository>();
             var fakeCustomer = CreateFakeCustomer();
@@ -434,7 +435,7 @@ namespace OrderEntryMockingPracticeTests
             return customerRepository;
         }
 
-        private static Customer CreateFakeCustomer()
+        private Customer CreateFakeCustomer()
         {
             var fakeCustomer = new Customer
                 {
@@ -450,7 +451,7 @@ namespace OrderEntryMockingPracticeTests
             return fakeCustomer;
         }
 
-        private static IProductRepository CreateMockProductRepository()
+        private IProductRepository CreateMockProductRepository()
         {
             var productRepo = Substitute.For<IProductRepository>();
             productRepo.IsInStock("Steak").Returns(false);

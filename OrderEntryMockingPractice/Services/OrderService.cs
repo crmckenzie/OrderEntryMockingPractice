@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using OrderEntryMockingPractice.Models;
 
@@ -54,6 +55,7 @@ namespace OrderEntryMockingPractice.Services
 
         public decimal GetNetTotal(Order order)
         {
+            Debug.WriteLine("Seems like GetNetTotal would work better as a method on the order object.")
             CheckIfOrderIsValid(order);
             decimal netTotal = order.OrderItems.Sum(item => item.Product.Price * item.Quantity);
             return netTotal;
@@ -62,6 +64,7 @@ namespace OrderEntryMockingPractice.Services
         public decimal GetOrderTotal(Order order)
         {
             CheckIfOrderIsValid(order);
+            Debug.WriteLine("Seems like GetOrderTotal (minus the Validation part) would work better as a method on the order object.")
             var customerInfo = CustomerRepository.Get((int) order.CustomerId);
 
             var netTotal = GetNetTotal(order);
@@ -114,6 +117,8 @@ namespace OrderEntryMockingPractice.Services
 
         private static bool OrderItemsIsEmpty(Order order)
         {
+            Debug.WriteLine("Seems like OrderItemsIsEmpty would work better as a method on the order object. Perhaps rename to HasOrderItems")
+
             return order.OrderItems.Equals(null) || !order.OrderItems.Any();
         }
 
@@ -125,6 +130,8 @@ namespace OrderEntryMockingPractice.Services
 
         private bool ContainsDuplicateProducts(Order order)
         {
+            Debug.WriteLine(
+                "Seems like ContainsDuplicateProducts would work better as a method on the order object. Perhaps rename to ProductsAreUnique");
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
             {
@@ -133,29 +140,5 @@ namespace OrderEntryMockingPractice.Services
             }
             return false;
         }  
-    }
-    
-    public class InvalidOrderException : Exception
-    {
-        public List<string> ExceptionMessages { get; set; }
-        public new virtual string Message { get; set;  }
-
-        public InvalidOrderException(List<string> exceptionMessages)
-        {
-            ExceptionMessages = exceptionMessages;
-            GenerateErrorMessage();
-        }
-
-        private void GenerateErrorMessage()
-        {
-            Message = ExceptionMessages[0];
-            if (ExceptionMessages.Count > 1)
-            {
-                for (int i = 1; i < ExceptionMessages.Count; i++)
-                {
-                    Message += ", " + ExceptionMessages[i];
-                }
-            }
-        }
     }
 }
