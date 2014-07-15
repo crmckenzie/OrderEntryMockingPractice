@@ -13,6 +13,11 @@ namespace OrderEntryMockingPracticeTests
     [TestFixture]
     public class OrderServiceTests
     {
+        private static int _customerId = 1;
+        private static int _orderId = 10;
+        private static decimal _netTotal = 8m;
+        private static decimal _orderTotal = 8.64m;
+        private static decimal _taxRate = .08m;
 
         [Test]
         public  void ValidOrder()
@@ -70,7 +75,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = CreateOrderService();
             var order = new Order
             {
-                CustomerId = 1,
+                CustomerId = _customerId,
             };
             var succeeded = false;
             //Act
@@ -120,7 +125,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = CreateOrderService();
             var order = new Order
                 {
-                    CustomerId = 1
+                    CustomerId = _customerId
                 };
             AddDuplicateProductToOrder(order);
             var succeeded = false;
@@ -151,7 +156,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = CreateOrderService();
             var order = new Order
                 {
-                    CustomerId = 1
+                    CustomerId = _customerId
                 };
             var steakNotInStock = new Product
             {
@@ -220,9 +225,8 @@ namespace OrderEntryMockingPracticeTests
             orderService.PlaceOrder(order);
 
             // Assert
-            Assert.Fail("Arg.Any<int>() is not appropriate here. You'll need to mimic the db behavior of assigning an id and assert that the correct ids are passed.");
             orderService.EmailService.Received()
-                .SendOrderConfirmationEmail(554, 214234);
+                .SendOrderConfirmationEmail(_customerId,_orderId);
         }
 
         [Test]
@@ -241,9 +245,8 @@ namespace OrderEntryMockingPracticeTests
                 // Only care that Fulfill is not called if exception is thrown
             }
             // Assert
-            Assert.Fail("Arg.Any<int>() is not appropriate here. You'll need to mimic the db behavior of assigning an id and assert that the correct ids are passed.");
             orderService.EmailService.DidNotReceive()
-                .SendOrderConfirmationEmail(Arg.Any<int>(), Arg.Any<int>());
+                .SendOrderConfirmationEmail(_customerId,_orderId);
         }
 
         [Test]
@@ -256,8 +259,7 @@ namespace OrderEntryMockingPracticeTests
             var result = orderService.GetNetTotal(orderWithPrices);
 
             // Assert
-            Assert.Fail("8 is a magic number. Give it context to make it meaningful.");
-            Assert.AreEqual(8, result);
+            Assert.AreEqual(_netTotal, result);
         }
 
         [Test]
@@ -269,8 +271,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             var result = orderService.GetOrderTotal(orderWithPrices);
             // Assert
-            Assert.Fail("magic number. Give it context to make it meaningful.");
-            Assert.AreEqual(8.64m, result);
+            Assert.AreEqual(_orderTotal, result);
         }
 
         [Test]
@@ -282,14 +283,13 @@ namespace OrderEntryMockingPracticeTests
             // Act
             var result = orderService.PlaceOrder(orderWithPrices);
             // Assert
-            Assert.Fail("magic number. Give it context to make it meaningful.");
-            Assert.That(result.OrderId.Equals(10));
+            Assert.That(result.OrderId.Equals(_orderId));
             Assert.That(result.OrderNumber.Equals("fakeOrderNumber"));
-            Assert.That(result.CustomerId.Equals(1));
+            Assert.That(result.CustomerId.Equals(_customerId));
             Assert.That(result.OrderItems.Count > 0);
             Assert.That(result.Taxes, Is.Not.Null);
-            Assert.That(result.NetTotal.Equals(8m));
-            Assert.That(result.Total.Equals(8.64m));
+            Assert.That(result.NetTotal.Equals(_netTotal));
+            Assert.That(result.Total.Equals(_orderTotal));
             Assert.That(result.EstimatedDeliveryDate, Is.Not.Null);
         }
 
@@ -297,7 +297,7 @@ namespace OrderEntryMockingPracticeTests
         {
             var order = new Order
             {
-                CustomerId = 1
+                CustomerId = _customerId
             };
             var apple = new Product
             {
@@ -328,7 +328,7 @@ namespace OrderEntryMockingPracticeTests
         {
             var order = new Order
                 {
-                    CustomerId = 1
+                    CustomerId = _customerId
                 };
             var apple = new Product
                 {
@@ -393,14 +393,30 @@ namespace OrderEntryMockingPracticeTests
                 taxRateService,customerRepo);
         }
 
+        private Customer CreateFakeCustomer()
+        {
+            var fakeCustomer = new Customer
+            {
+                CustomerId = _customerId,
+                CustomerName = "fakeName",
+                EmailAddress = "fakeEmail",
+                AddressLine1 = "fakeAddress",
+                City = "fakeCity",
+                StateOrProvince = "fakeState",
+                PostalCode = "fakePostalCode",
+                Country = "fakeCountry"
+            };
+            return fakeCustomer;
+        }
+
         private IOrderFulfillmentService CreateMockFulfillService()
         {
             var fulfillService = Substitute.For<IOrderFulfillmentService>();
             var confirmation = new OrderConfirmation
                 {
                     OrderNumber = "fakeOrderNumber",
-                    OrderId = 10,
-                    CustomerId = 1,
+                    OrderId = _orderId,
+                    CustomerId = _customerId,
                     EstimatedDeliveryDate = new DateTime(2014,06,06)
                 };
             fulfillService.Fulfill(Arg.Any<Order>()).Returns(confirmation);
@@ -419,7 +435,7 @@ namespace OrderEntryMockingPracticeTests
             var waTaxEntry = new TaxEntry
                 {
                     Description = "wa",
-                    Rate = .08m
+                    Rate = _taxRate
                 };
             var taxEntryList = new List<TaxEntry> {waTaxEntry};
             taxService.GetTaxEntries(Arg.Any<String>(), Arg.Any<String>())
@@ -433,22 +449,6 @@ namespace OrderEntryMockingPracticeTests
             var fakeCustomer = CreateFakeCustomer();
             customerRepository.Get(Arg.Any<int>()).Returns(fakeCustomer);
             return customerRepository;
-        }
-
-        private Customer CreateFakeCustomer()
-        {
-            var fakeCustomer = new Customer
-                {
-                    CustomerId = 1,
-                    CustomerName = "fakeName",
-                    EmailAddress = "fakeEmail",
-                    AddressLine1 = "fakeAddress",
-                    City = "fakeCity",
-                    StateOrProvince = "fakeState",
-                    PostalCode = "fakePostalCode",
-                    Country = "fakeCountry"
-                };
-            return fakeCustomer;
         }
 
         private IProductRepository CreateMockProductRepository()
