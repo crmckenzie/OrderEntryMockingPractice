@@ -27,8 +27,6 @@ namespace OrderEntryMockingPractice.Models
 
         public bool OrderItemsIsEmpty()
         {
-           // Debug.WriteLine("Seems like OrderItemsIsEmpty would work better as a method on the order object. Perhaps rename to HasOrderItems")
-
             return OrderItems.Equals(null) || !OrderItems.Any();
         }
 
@@ -36,8 +34,6 @@ namespace OrderEntryMockingPractice.Models
 
         public bool ContainsDuplicateProducts()
         {
-           // Debug.WriteLine(
-              //  "Seems like ContainsDuplicateProducts would work better as a method on the order object. Perhaps rename to ProductsAreUnique");
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in OrderItems)
             {
