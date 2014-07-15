@@ -8,19 +8,19 @@ namespace OrderEntryMockingPractice.Services
     public class OrderService
     {
         public IProductRepository ProductRepository { get; set; }
-        public IOrderFulfillmentService OrderFulfill { get; set; }
+        public IOrderFulfillmentService FulfillmentService { get; set; }
         public IEmailService EmailService { get; set; }
         public ITaxRateService TaxRateService { get; set; }
         public ICustomerRepository CustomerRepository { get; set; }
 
         public OrderService (IProductRepository productRepository, 
-            IOrderFulfillmentService orderFulfill, 
+            IOrderFulfillmentService fulfillmentService, 
             IEmailService emailService, 
             ITaxRateService taxRateService, 
             ICustomerRepository customerRepository)
         {
             ProductRepository = productRepository;
-            OrderFulfill = orderFulfill;
+            FulfillmentService = fulfillmentService;
             EmailService = emailService;
             TaxRateService = taxRateService;
             CustomerRepository = customerRepository;
@@ -30,7 +30,7 @@ namespace OrderEntryMockingPractice.Services
         {
             if (order == null) throw new NullReferenceException();
             CheckIfOrderIsValid(order);
-            var confirmation = OrderFulfill.Fulfill(order);
+            var confirmation = FulfillmentService.Fulfill(order);
             SendConfirmationEmail(order, confirmation);
             return CreateOrderSummary(order, confirmation);
         }
@@ -125,7 +125,6 @@ namespace OrderEntryMockingPractice.Services
 
         private bool ContainsDuplicateProducts(Order order)
         {
-            //if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
             {

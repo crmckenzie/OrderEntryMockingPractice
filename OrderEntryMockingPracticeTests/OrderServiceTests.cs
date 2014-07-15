@@ -194,7 +194,7 @@ namespace OrderEntryMockingPracticeTests
             // Act
             orderService.PlaceOrder(order);
             // Assert
-            orderService.OrderFulfill.Received().Fulfill(order);
+            orderService.FulfillmentService.Received().Fulfill(order);
         }
 
         [Test]
@@ -213,7 +213,7 @@ namespace OrderEntryMockingPracticeTests
                 // Only Care THat Fulfill not called
             }
             // Assert
-            orderService.OrderFulfill.DidNotReceive().Fulfill(invalidOrder);
+            orderService.FulfillmentService.DidNotReceive().Fulfill(invalidOrder);
         }
 
         [Test]
