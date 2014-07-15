@@ -90,15 +90,15 @@ namespace OrderEntryMockingPractice.Services
         private void CheckIfOrderIsValid(Order order)
         {
             var reasonsForInvalidity = new List<string>();
-            if (order.CustomerId.Equals(null))
+            if (order.CustomerId == null)
             {
                 reasonsForInvalidity.Add("CustomerId Is Null");
             }
-            if (order.OrderItems.Equals(null) || !order.OrderItems.Any())
+            if (OrderItemsIsEmpty(order))
             {
                 reasonsForInvalidity.Add("OrderItems Is Empty");
             }
-            if (ContainsDuplicateProducts(order))
+            if (!OrderItemsIsEmpty(order) && ContainsDuplicateProducts(order))
             {
                 reasonsForInvalidity.Add("OrderItems Contains Duplicate Products");
             }
@@ -112,6 +112,11 @@ namespace OrderEntryMockingPractice.Services
             }
         }
 
+        private static bool OrderItemsIsEmpty(Order order)
+        {
+            return order.OrderItems.Equals(null) || !order.OrderItems.Any();
+        }
+
         private bool ProductsInStock(Order order)
         {
             if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
@@ -120,7 +125,7 @@ namespace OrderEntryMockingPractice.Services
 
         private bool ContainsDuplicateProducts(Order order)
         {
-            if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
+            //if (order.OrderItems == null || order.OrderItems.Count == 0) return false;
             var productsInOrderItems = new HashSet<string>();
             foreach (OrderItem item in order.OrderItems)
             {
