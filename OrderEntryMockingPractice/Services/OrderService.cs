@@ -32,18 +32,21 @@ namespace OrderEntryMockingPractice.Services
         {
             var skus = order.OrderItems.Select(x => x.Product.Sku);
             
-            if (StringsAreUnique(skus))
-            {
-                foreach (var sku in skus)
-                    if (!_productRepository.IsInStock(sku))
-                        //add exception to list
-                        return null;
+            if (!StringsAreUnique(skus))
+                //add exception to list
+                 return null;
+            foreach (var sku in skus)
+                if (!_productRepository.IsInStock(sku))
+                    //add exception to list
+                    return null;
+   
+            var confirmation =  _orderFulfillmentService.Fulfill(order);
 
-                _orderFulfillmentService.Fulfill(order);
+            var orderSummary = new OrderSummary();
 
-                return new OrderSummary();
-            }
-            return null;
+            orderSummary.OrderNumber = confirmation.OrderNumber;
+
+            return orderSummary;
         }
 
         private bool StringsAreUnique(IEnumerable<string> strings)

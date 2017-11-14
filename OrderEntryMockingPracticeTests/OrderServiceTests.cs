@@ -80,6 +80,8 @@ namespace OrderEntryMockingPracticeTests
 
             _mockIProductRepository.Stub(a => a.IsInStock(Arg<string>.Is.Anything)).Return(true);
 
+            _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order));
+
             var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
                 _mockIOrderFulfillmentService, _mockITaxRateService);
             var result = orderService.PlaceOrder(order);
@@ -115,6 +117,8 @@ namespace OrderEntryMockingPracticeTests
             _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
             _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
 
+            _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order));
+
             var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
                 _mockIOrderFulfillmentService, _mockITaxRateService);
 
@@ -149,6 +153,8 @@ namespace OrderEntryMockingPracticeTests
             _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
             _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
 
+            _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order));
+
             var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
                 _mockIOrderFulfillmentService, _mockITaxRateService);
 
@@ -169,7 +175,23 @@ namespace OrderEntryMockingPracticeTests
         [Test]
         public void ValidOrderSummary_ContainsOrderFulfillmentConfirmationNumber()
         {
-            //
+            var order = MakeOrders();
+
+            var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
+                _mockIOrderFulfillmentService, _mockITaxRateService);
+
+            var expectedOrderNumber = "AX1123";
+
+            _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
+            _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
+
+            _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order))
+                .Return(new OrderConfirmation {OrderNumber = expectedOrderNumber});
+
+            var orderSummary = orderService.PlaceOrder(order);
+
+            Assert.That(orderSummary.OrderNumber, Is.EqualTo(expectedOrderNumber));
+
         }
 
 
