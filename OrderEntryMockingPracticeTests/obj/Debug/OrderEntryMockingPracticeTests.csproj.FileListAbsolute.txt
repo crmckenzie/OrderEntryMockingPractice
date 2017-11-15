@@ -1,0 +1,12 @@
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPracticeTests.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPracticeTests.pdb
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.csproj.CoreCompileInputs.cache
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.pdb
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.csprojResolveAssemblyReference.cache
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\nunit.framework.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPractice.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\Rhino.Mocks.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPractice.pdb
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\nunit.framework.xml
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\Rhino.Mocks.xml

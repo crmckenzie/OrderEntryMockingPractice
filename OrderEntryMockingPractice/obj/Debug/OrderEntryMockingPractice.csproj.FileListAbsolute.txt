@@ -1,0 +1,6 @@
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\bin\Debug\OrderEntryMockingPractice.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\bin\Debug\OrderEntryMockingPractice.pdb
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\obj\Debug\OrderEntryMockingPractice.csprojResolveAssemblyReference.cache
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\obj\Debug\OrderEntryMockingPractice.csproj.CoreCompileInputs.cache
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\obj\Debug\OrderEntryMockingPractice.dll
+C:\JJDGIT\OrderEntryMockingPractice\OrderEntryMockingPractice\obj\Debug\OrderEntryMockingPractice.pdb
