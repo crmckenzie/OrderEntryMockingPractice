@@ -16,7 +16,6 @@ namespace OrderEntryMockingPractice.Services
         private readonly IOrderFulfillmentService _orderFulfillmentService;
         private readonly ITaxRateService _taxRateService;
 
-
         public OrderService(IProductRepository productRepository, ICustomerRepository customerRepository,
             IEmailService emailService, IOrderFulfillmentService orderFulfillmentService,
             ITaxRateService taxRateService)
@@ -45,6 +44,8 @@ namespace OrderEntryMockingPractice.Services
             var orderSummary = new OrderSummary();
 
             orderSummary.OrderNumber = confirmation.OrderNumber;
+
+            orderSummary.OrderId = confirmation.OrderId;
 
             return orderSummary;
         }

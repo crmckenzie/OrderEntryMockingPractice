@@ -32,7 +32,6 @@ namespace OrderEntryMockingPracticeTests
             _mockITaxRateService = MockRepository.GenerateMock<ITaxRateService>();
         }
 
-
         public Order MakeOrders()
         {
             var order = new Order
@@ -76,8 +75,6 @@ namespace OrderEntryMockingPracticeTests
         {
             var order = MakeOrders();
 
-
-
             _mockIProductRepository.Stub(a => a.IsInStock(Arg<string>.Is.Anything)).Return(true);
 
             _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order));
@@ -104,15 +101,12 @@ namespace OrderEntryMockingPracticeTests
             var result = orderService.PlaceOrder(order);
 
             Assert.IsNull(result);
-            //Assert.That(orderService.failedValidationList, Is.EqualTo(null));
         }
 
         [Test]
         public void AllOrderItemsMustBeInStock()
         {
             var order = MakeOrders();
-
-
 
             _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
             _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
@@ -147,7 +141,6 @@ namespace OrderEntryMockingPracticeTests
         [Test]
         public void ValidOrder_ReturnsOrderSummary()
         {
-            //
             var order = MakeOrders();
 
             _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
@@ -162,8 +155,6 @@ namespace OrderEntryMockingPracticeTests
 
             Assert.IsNotNull(orderSummary);
             _mockIOrderFulfillmentService.AssertWasCalled(ofs => ofs.Fulfill(order));
-
-
         }
 
         [Test]
@@ -191,6 +182,27 @@ namespace OrderEntryMockingPracticeTests
             var orderSummary = orderService.PlaceOrder(order);
 
             Assert.That(orderSummary.OrderNumber, Is.EqualTo(expectedOrderNumber));
+        }
+
+        [Test]
+        public void ValidOrderSummary_ContainsIDGeneratedByOrderFulfillmentService()
+        {
+            var order = MakeOrders();
+
+            var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
+                _mockIOrderFulfillmentService, _mockITaxRateService);
+
+            var expectedIDNumber = 7;
+
+            _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
+            _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
+
+            _mockIOrderFulfillmentService.Stub(s => s.Fulfill(order))
+                .Return(new OrderConfirmation { OrderId = expectedIDNumber });
+
+            var orderSummary = orderService.PlaceOrder(order);
+
+            Assert.That(orderSummary.OrderId, Is.EqualTo(expectedIDNumber));
 
         }
     }
