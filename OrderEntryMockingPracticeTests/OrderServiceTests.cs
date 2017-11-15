@@ -43,31 +43,59 @@ namespace OrderEntryMockingPracticeTests
                     {
                         Product = new Product
                         {
-                            Description = "Product",
-                            Name = "Name of Product.",
+                            Description = "Thing1",
+                            Name = "ThingOne",
                             Price = 10.0m,
                             ProductId = 5,
                             Sku = "ABCDE"
                         },
-                        Quantity = 10
+                        Quantity = 12
                     },
                     new OrderItem
                     {
                         Product = new Product
                         {
-                            Description = "Product",
-                            Name = "Name of Product.",
-                            Price = 10.0m,
-                            ProductId = 5,
+                            Description = "Thing2",
+                            Name = "ThingTwo",
+                            Price = 11.0m,
+                            ProductId = 6,
                             Sku = "BCDEF"
                         },
-                        Quantity = 10
+                        Quantity = 3
                     }
 
                 }
 
             };
             return order;
+        }
+
+
+        public TaxEntry MakeTaxEntry()
+        {
+                var taxes = new TaxEntry
+                {
+                    Description = "TheTaxRate",
+                    Rate = 0.10m
+                };
+                return taxes;
+        }
+
+        public Customer MakeCustomer()
+        {
+            var customer = new Customer
+            {
+                CustomerId = 1,
+                AddressLine1 = "1918 Eighth Ave",
+                AddressLine2 = "Suite 3100",
+                City = "Seattle",
+                Country = "USA",
+                CustomerName = "Joe Money",
+                EmailAddress = "name@domain.com",
+                PostalCode = "98101",
+                StateOrProvince = "WA"
+            };
+            return customer;
         }
 
         [Test]

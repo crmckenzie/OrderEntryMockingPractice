@@ -41,11 +41,11 @@ namespace OrderEntryMockingPractice.Services
    
             var confirmation =  _orderFulfillmentService.Fulfill(order);
 
-            var orderSummary = new OrderSummary();
-
-            orderSummary.OrderNumber = confirmation.OrderNumber;
-
-            orderSummary.OrderId = confirmation.OrderId;
+            var orderSummary = new OrderSummary
+            {
+                OrderNumber = confirmation.OrderNumber,
+                OrderId = confirmation.OrderId
+            };
 
             return orderSummary;
         }
