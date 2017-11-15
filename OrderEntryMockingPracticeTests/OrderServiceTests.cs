@@ -66,7 +66,7 @@ namespace OrderEntryMockingPracticeTests
                     }
 
                 }
-            
+
             };
             return order;
         }
@@ -76,7 +76,7 @@ namespace OrderEntryMockingPracticeTests
         {
             var order = MakeOrders();
 
-            
+
 
             _mockIProductRepository.Stub(a => a.IsInStock(Arg<string>.Is.Anything)).Return(true);
 
@@ -85,7 +85,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
                 _mockIOrderFulfillmentService, _mockITaxRateService);
             var result = orderService.PlaceOrder(order);
-            
+
             Assert.IsNotNull(result);
         }
 
@@ -102,7 +102,7 @@ namespace OrderEntryMockingPracticeTests
             var orderService = new OrderService(_mockIProductRepository, _mockICustomerRepository, _mockIEmailService,
                 _mockIOrderFulfillmentService, _mockITaxRateService);
             var result = orderService.PlaceOrder(order);
-            
+
             Assert.IsNull(result);
             //Assert.That(orderService.failedValidationList, Is.EqualTo(null));
         }
@@ -112,7 +112,7 @@ namespace OrderEntryMockingPracticeTests
         {
             var order = MakeOrders();
 
-            
+
 
             _mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(true);
             _mockIProductRepository.Stub(a => a.IsInStock("BCDEF")).Return(true);
@@ -123,7 +123,7 @@ namespace OrderEntryMockingPracticeTests
                 _mockIOrderFulfillmentService, _mockITaxRateService);
 
             var result = orderService.PlaceOrder(order);
-            
+
             Assert.IsNotNull(result);
         }
 
@@ -131,7 +131,7 @@ namespace OrderEntryMockingPracticeTests
         public void OrderItemsNotInStockReturnNull()
         {
             var order = MakeOrders();
-            
+
             var mockIProductRepository = MockRepository.GenerateMock<IProductRepository>();
 
             mockIProductRepository.Stub(a => a.IsInStock("ABCDE")).Return(false);
@@ -140,7 +140,7 @@ namespace OrderEntryMockingPracticeTests
                 _mockIOrderFulfillmentService, _mockITaxRateService);
 
             var result = orderService.PlaceOrder(order);
-            
+
             Assert.IsNull(result);
         }
 
@@ -193,8 +193,5 @@ namespace OrderEntryMockingPracticeTests
             Assert.That(orderSummary.OrderNumber, Is.EqualTo(expectedOrderNumber));
 
         }
-
-
-    }   
-
+    }
 }
