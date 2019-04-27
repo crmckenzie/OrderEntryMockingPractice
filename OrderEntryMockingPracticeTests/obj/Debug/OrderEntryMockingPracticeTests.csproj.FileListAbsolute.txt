@@ -1,0 +1,11 @@
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.csprojResolveAssemblyReference.cache
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPracticeTests.dll
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPracticeTests.pdb
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\nunit.framework.dll
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPractice.dll
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\OrderEntryMockingPractice.pdb
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\nunit.framework.xml
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.dll
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\obj\Debug\OrderEntryMockingPracticeTests.pdb
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\NSubstitute.dll
+C:\Git\OrderEntryMockingPractice\OrderEntryMockingPracticeTests\bin\Debug\NSubstitute.xml

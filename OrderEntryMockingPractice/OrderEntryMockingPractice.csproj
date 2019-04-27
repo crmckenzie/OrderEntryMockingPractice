@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.7.2.0\lib\NET45\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +48,7 @@
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Services\ICustomerRepository.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\InvalidOrderException.cs" />
     <Compile Include="Services\IOrderFulfillmentService.cs" />
     <Compile Include="Services\IProductRepository.cs" />
     <Compile Include="Services\ITaxRateService.cs" />
@@ -56,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
